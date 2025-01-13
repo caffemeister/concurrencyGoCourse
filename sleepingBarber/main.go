@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/fatih/color"
@@ -34,10 +36,35 @@ func main() {
 	color.Green("The shop is open for the day!")
 
 	// add barbers
+	shop.addBarber("Frank")
 
 	// start the barbershop as a goroutine
+	shopClosing := make(chan bool)
+	closed := make(chan bool)
+
+	go func() {
+		<-time.After(timeOpen) // when you receive a signal from the channel that gets created from time.After(timeOpen), do:
+		shopClosing <- true
+		shop.closeShopForDay()
+		closed <- true
+	}()
 
 	// add clients
+	i := 1
+	go func() {
+		for {
+			// get a random number with average arrival rate
+			randomMillseconds := rand.Int() % (2 * arrivalRate)
+			select {
+			case <-shopClosing:
+				return
+			case <-time.After(time.Millisecond * time.Duration(randomMillseconds)):
+				shop.addClient(fmt.Sprintf("Client #%d", i))
+				i++
+			}
+		}
+	}()
 
-	// block (keep the application going until things are finished) until the barbershop is closed
+	// block (keep the application going until things are finished) until you receive a closed signal to main
+	<-closed
 }
