@@ -37,6 +37,7 @@ func main() {
 
 	// add barbers
 	shop.addBarber("Frank")
+	shop.addBarber("Obama")
 
 	// start the barbershop as a goroutine
 	shopClosing := make(chan bool)
