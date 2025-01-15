@@ -263,7 +263,7 @@ func (app *Config) generateManual(u data.User, plan *data.Plan) *gofpdf.Fpdf {
 	pdf.SetFont("Arial", "", 12)
 	pdf.MultiCell(0, 4, fmt.Sprintf("%s %s", u.FirstName, u.LastName), "", "C", false)
 	pdf.Ln(5)
-	pdf.MultiCell(0, 4, fmt.Sprintf("%s User Guide"), "", "C", false)
+	pdf.MultiCell(0, 4, fmt.Sprintf("%s User Guide", plan.PlanName), "", "C", false)
 
 	return pdf
 }
