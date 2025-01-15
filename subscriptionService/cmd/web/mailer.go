@@ -99,6 +99,12 @@ func (m *Mail) sendMail(msg Message, errorChan chan error) {
 	}
 
 	email := mail.NewMSG()
+
+	if email == nil {
+		errorChan <- fmt.Errorf("failed to create email object")
+		return
+	}
+
 	email.SetFrom(msg.From).AddTo(msg.To).SetSubject(msg.Subject)
 	email.SetBody(mail.TextPlain, plainMessage)
 	email.AddAlternative(mail.TextHTML, formattedMessage)
