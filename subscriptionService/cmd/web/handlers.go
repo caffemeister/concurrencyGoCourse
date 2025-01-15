@@ -168,7 +168,10 @@ func (app *Config) SubscribeToPlan(w http.ResponseWriter, r *http.Request) {
 	// the the id of the plan that is chosen
 	id := r.URL.Query().Get("id")
 
-	planID, _ := strconv.Atoi(id)
+	planID, err := strconv.Atoi(id)
+	if err != nil {
+		app.ErrorLog.Println("error getting plan:", err)
+	}
 
 	// get the plan from the db
 	plan, err := app.Models.Plan.GetOne(planID)
@@ -231,7 +234,7 @@ func (app *Config) SubscribeToPlan(w http.ResponseWriter, r *http.Request) {
 		app.sendEmail(msg)
 
 		// test app error chan
-		app.ErrorChan <- errors.New("some custom error")
+		app.ErrorChan <- errors.New("some custom error, this is a test error")
 	}()
 
 	// subscribe the user to an account
