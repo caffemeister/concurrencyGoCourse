@@ -196,7 +196,7 @@ func (app *Config) createMail() Mail {
 	m := Mail{
 		Domain:      "localhost",
 		Host:        "localhost",
-		Port:        1024,
+		Port:        1025,
 		Encryption:  "none",
 		FromName:    "Info",
 		FromAddress: "info@mycompany.com",
