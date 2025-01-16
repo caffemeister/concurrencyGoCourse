@@ -1,32 +1,30 @@
-DSN=host=localhost port=5432 user=postgres password=password dbname=concurrency sslmode=disable timezone=UTC connect_timeout=5
-BINARY_NAME=myapp.exe
-REDIS="127.0.0.1:6379"
+include .env
+export $(shell sed 's/=.*//' .env)
 
-## build: builds all binaries
 build:
-	@go build -o ${BINARY_NAME} ./cmd/web
-	@echo back end built!
+	@go build -o $(BINARY_NAME) ./cmd/web
+	@echo "Back end built!"
 
 run: build
-	@echo Starting...
-	@cmd /k "set DSN=${DSN} && set REDIS=${REDIS} && ${BINARY_NAME}"
-	@echo Back end started!
+	@echo "Starting..."
+	@set DSN=$(DSN) && set REDIS=$(REDIS) && $(BINARY_NAME)
+	@echo "Back end started!"
 
 clean:
-	@echo Cleaning...
-	@DEL ${BINARY_NAME}
+	@echo "Cleaning..."
+	@DEL /F /Q $(BINARY_NAME) 2>nul || true
 	@go clean
-	@echo Cleaned!
+	@echo "Cleaned!"
 
 start: run
 
 stop:
 	@echo "Stopping..."
-	@taskkill /IM ${BINARY_NAME} /F
-	@echo Stopped back end
+	@taskkill /IM $(BINARY_NAME) /F 2>nul || echo "Process not running"
+	@echo "Stopped back end"
 
 restart: stop start
 
 test:
 	@echo "Testing..."
-	go test -v ./...
+	@go test -v ./...
